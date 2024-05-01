@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Box, Button, Flex, Heading, Input, Text, VStack } from '@chakra-ui/react';
 import { Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
@@ -21,8 +21,7 @@ const Index = () => {
   const addWater = (amount) => {
     const today = new Date().getDay();
     const updatedData = [...dailyIntakes.datasets[0].data];
-    const newAmount = updatedData[today] + amount;
-    updatedData[today] = newAmount;
+    updatedData[today] += amount;
     setDailyIntakes({
       ...dailyIntakes,
       datasets: [{
@@ -31,12 +30,6 @@ const Index = () => {
       }]
     });
     setWaterIntake(prev => prev + amount);
-      ...dailyIntakes,
-      datasets: [{
-        ...dailyIntakes.datasets[0],
-        data: updatedData
-      }]
-    });
   };
 
   const handleCustomInput = (e) => {
@@ -75,8 +68,8 @@ const Index = () => {
             Add
           </Button>
         </Flex>
-      <Bar data={dailyIntakes} options={{ responsive: true, plugins: { legend: { position: 'top' }, title: { display: true, text: 'Weekly Water Intake' } } }} />
       </VStack>
+      <Bar data={dailyIntakes} options={{ responsive: true, plugins: { legend: { position: 'top' }, title: { display: true, text: 'Weekly Water Intake' } } }} />
     </Flex>
   );
 };
