@@ -74,9 +74,12 @@ const Index = () => {
           </Button>
         </Flex>
       </VStack>
-      <svg width="100%" height="200" viewBox="0 0 100 100">
+      <svg width="100%" height="250" viewBox="0 0 100 100">
         {dailyIntakes.datasets[0].data.map((intake, index) => (
-          <rect key={index} x={index * 15} y={100 - intake} width="10" height={intake} fill="blue" />
+          <g key={index}>
+            <rect x={index * 15} y={100 - intake} width="10" height={intake} fill="blue" />
+            <text x={index * 15 + 5} y={105} fill="black" fontSize="5" textAnchor="middle">{dailyIntakes.labels[index][0]}</text>
+          </g>
         ))}
       </svg>
     </Flex>
