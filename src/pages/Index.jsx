@@ -1,30 +1,20 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Box, Button, Flex, Heading, Input, Text, VStack } from '@chakra-ui/react';
 import { FaPlus, FaTint } from 'react-icons/fa';
+import { addWeeks, startOfWeek, format } from 'date-fns';
 
 const Index = () => {
   const [waterIntake, setWaterIntake] = useState(0);
-  const [dailyIntakes, setDailyIntakes] = useState({
-    labels: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-    datasets: [{
-      label: 'Water Intake (ml)',
-      data: [0, 0, 0, 0, 0, 0, 0],
-      backgroundColor: 'rgba(54, 162, 235, 0.5)'
-    }]
-  });
+  const [selectedWeekStart, setSelectedWeekStart] = useState(startOfWeek(new Date(), { weekStartsOn: 1 }));
+  const [weeklyIntakes, setWeeklyIntakes] = useState([]);
   const [customAmount, setCustomAmount] = useState('');
 
+  useEffect(() => {
+    const data = Array(7).fill().map((_, i) => Math.floor(Math.random() * 500));
+    setWeeklyIntakes(data);
+  }, [selectedWeekStart]);
+
   const addWater = (amount) => {
-    const today = new Date().getDay();
-    const updatedData = [...dailyIntakes.datasets[0].data];
-    updatedData[today] += amount;
-    setDailyIntakes({
-      ...dailyIntakes,
-      datasets: [{
-        ...dailyIntakes.datasets[0],
-        data: updatedData
-      }]
-    });
     setWaterIntake(prev => prev + amount);
   };
 
@@ -64,9 +54,12 @@ const Index = () => {
             Add
           </Button>
         </Flex>
+        <Button onClick={() => setSelectedWeekStart(addWeeks(selectedWeekStart, -1))}>Previous Week</Button>
+        <Button onClick={() => setSelectedWeekStart(addWeeks(selectedWeekStart, 1))}>Next Week</Button>
+        <Text>Week of {format(selectedWeekStart, 'MMM dd, yyyy')}</Text>
       </VStack>
       <svg width="100%" height="200" viewBox="0 0 100 100">
-        {dailyIntakes.datasets[0].data.map((intake, index) => (
+        {weeklyIntakes.map((intake, index) => (
           <rect key={index} x={index * 15} y={100 - intake} width="10" height={intake} fill="blue" />
         ))}
       </svg>
