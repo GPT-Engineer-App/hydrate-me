@@ -4,10 +4,28 @@ import { FaPlus, FaTint } from 'react-icons/fa';
 
 const Index = () => {
   const [waterIntake, setWaterIntake] = useState(0);
+  const [dailyIntakes, setDailyIntakes] = useState({
+    labels: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+    datasets: [{
+      label: 'Water Intake (ml)',
+      data: [0, 0, 0, 0, 0, 0, 0],
+      backgroundColor: 'rgba(54, 162, 235, 0.5)'
+    }]
+  });
   const [customAmount, setCustomAmount] = useState('');
 
   const addWater = (amount) => {
-    setWaterIntake(waterIntake + amount);
+    const today = new Date().getDay();
+    const updatedData = [...dailyIntakes.datasets[0].data];
+    updatedData[today] += amount;
+    setDailyIntakes({
+      ...dailyIntakes,
+      datasets: [{
+        ...dailyIntakes.datasets[0],
+        data: updatedData
+      }]
+    });
+    setWaterIntake(prev => prev + amount);
   };
 
   const handleCustomInput = (e) => {
@@ -47,6 +65,11 @@ const Index = () => {
           </Button>
         </Flex>
       </VStack>
+      <svg width="100%" height="200" viewBox="0 0 100 100">
+        {dailyIntakes.datasets[0].data.map((intake, index) => (
+          <rect key={index} x={index * 15} y={100 - intake} width="10" height={intake} fill="blue" />
+        ))}
+      </svg>
     </Flex>
   );
 };
