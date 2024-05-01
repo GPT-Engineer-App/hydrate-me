@@ -1,10 +1,6 @@
 import { useState } from 'react';
 import { Box, Button, Flex, Heading, Input, Text, VStack } from '@chakra-ui/react';
-import { Bar } from 'react-chartjs-2';
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
 import { FaPlus, FaTint } from 'react-icons/fa';
-
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const Index = () => {
   const [waterIntake, setWaterIntake] = useState(0);
@@ -69,7 +65,11 @@ const Index = () => {
           </Button>
         </Flex>
       </VStack>
-      <Bar data={dailyIntakes} options={{ responsive: true, plugins: { legend: { position: 'top' }, title: { display: true, text: 'Weekly Water Intake' } } }} />
+      <svg width="100%" height="200" viewBox="0 0 100 100">
+        {dailyIntakes.datasets[0].data.map((intake, index) => (
+          <rect key={index} x={index * 15} y={100 - intake} width="10" height={intake} fill="blue" />
+        ))}
+      </svg>
     </Flex>
   );
 };
