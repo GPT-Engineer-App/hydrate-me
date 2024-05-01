@@ -7,6 +7,7 @@ import { FaPlus, FaTint } from 'react-icons/fa';
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const Index = () => {
+  const [waterIntake, setWaterIntake] = useState(0);
   const [dailyIntakes, setDailyIntakes] = useState({
     labels: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
     datasets: [{
@@ -20,8 +21,16 @@ const Index = () => {
   const addWater = (amount) => {
     const today = new Date().getDay();
     const updatedData = [...dailyIntakes.datasets[0].data];
-    updatedData[today] += amount;
+    const newAmount = updatedData[today] + amount;
+    updatedData[today] = newAmount;
     setDailyIntakes({
+      ...dailyIntakes,
+      datasets: [{
+        ...dailyIntakes.datasets[0],
+        data: updatedData
+      }]
+    });
+    setWaterIntake(prev => prev + amount);
       ...dailyIntakes,
       datasets: [{
         ...dailyIntakes.datasets[0],
