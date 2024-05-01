@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Box, Button, Flex, Heading, Input, Text, VStack } from '@chakra-ui/react';
+import { Box, Button, Flex, Heading, Input, Text, VStack, Select } from '@chakra-ui/react';
 import { FaPlus, FaTint } from 'react-icons/fa';
 
 const Index = () => {
@@ -13,11 +13,11 @@ const Index = () => {
     }]
   });
   const [customAmount, setCustomAmount] = useState('');
+  const [selectedDay, setSelectedDay] = useState(new Date().getDay());
 
   const addWater = (amount) => {
-    const today = new Date().getDay();
     const updatedData = [...dailyIntakes.datasets[0].data];
-    updatedData[today] += amount;
+    updatedData[selectedDay] += amount;
     setDailyIntakes({
       ...dailyIntakes,
       datasets: [{
@@ -40,12 +40,21 @@ const Index = () => {
     }
   };
 
+  const handleDayChange = (e) => {
+    setSelectedDay(parseInt(e.target.value, 10));
+  };
+
   return (
     <Flex direction="column" align="center" justify="center" minH="100vh" p={4}>
       <Heading mb={6}>Track Your Water Intake</Heading>
       <Text fontSize="2xl" mb={4}>
         Total Water Intake: {waterIntake} ml
       </Text>
+      <Select placeholder="Select day" value={selectedDay} onChange={handleDayChange} mb={4}>
+        {dailyIntakes.labels.map((day, index) => (
+          <option key={day} value={index}>{day}</option>
+        ))}
+      </Select>
       <VStack spacing={4}>
         <Button leftIcon={<FaTint />} colorScheme="blue" onClick={() => addWater(250)}>
           Add 250ml
