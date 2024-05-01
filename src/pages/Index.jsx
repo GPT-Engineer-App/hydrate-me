@@ -1,13 +1,33 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Box, Button, Flex, Heading, Input, Text, VStack } from '@chakra-ui/react';
+import { Bar } from 'react-chartjs-2';
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
 import { FaPlus, FaTint } from 'react-icons/fa';
 
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+
 const Index = () => {
-  const [waterIntake, setWaterIntake] = useState(0);
+  const [dailyIntakes, setDailyIntakes] = useState({
+    labels: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+    datasets: [{
+      label: 'Water Intake (ml)',
+      data: [0, 0, 0, 0, 0, 0, 0],
+      backgroundColor: 'rgba(54, 162, 235, 0.5)'
+    }]
+  });
   const [customAmount, setCustomAmount] = useState('');
 
   const addWater = (amount) => {
-    setWaterIntake(waterIntake + amount);
+    const today = new Date().getDay();
+    const updatedData = [...dailyIntakes.datasets[0].data];
+    updatedData[today] += amount;
+    setDailyIntakes({
+      ...dailyIntakes,
+      datasets: [{
+        ...dailyIntakes.datasets[0],
+        data: updatedData
+      }]
+    });
   };
 
   const handleCustomInput = (e) => {
@@ -46,6 +66,7 @@ const Index = () => {
             Add
           </Button>
         </Flex>
+      <Bar data={dailyIntakes} options={{ responsive: true, plugins: { legend: { position: 'top' }, title: { display: true, text: 'Weekly Water Intake' } } }} />
       </VStack>
     </Flex>
   );
